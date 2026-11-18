@@ -1,0 +1,18 @@
+{"arm": "one-good-two-weak", "before_this_arm": 0.4375, "before_random_arms": 0.875}
+{"arm": "one-good-two-weak", "episode": 25, "this_arm": 0.375, "random_arms": 0.6875}
+{"arm": "one-good-two-weak", "episode": 50, "this_arm": 1.515625, "random_arms": 0.90625}
+episode 50: targets reached avg25=0.99, reward=2.93 (0.4 min)
+{"arm": "one-good-two-weak", "episode": 100, "this_arm": 2.3125, "random_arms": 1.09375}
+episode 100: targets reached avg25=2.21, reward=5.25 (0.8 min)
+episode 150: targets reached avg25=2.38, reward=6.00 (3.9 min)
+{"arm": "one-good-two-weak", "episode": 200, "this_arm": 3.03125, "random_arms": 1.34375}
+episode 200: targets reached avg25=2.84, reward=5.69 (4.3 min)
+episode 250: targets reached avg25=4.46, reward=13.19 (4.6 min)
+{"arm": "one-good-two-weak", "episode": 300, "this_arm": 5.296875, "random_arms": 2.0}
+episode 300: targets reached avg25=6.27, reward=11.08 (5.0 min)
+episode 350: targets reached avg25=7.88, reward=13.58 (5.3 min)
+episode 400: targets reached avg25=8.70, reward=14.03 (5.6 min)
+episode 450: targets reached avg25=8.82, reward=14.99 (6.0 min)
+{"arm": "one-good-two-weak", "episode": 500, "this_arm": 9.046875, "random_arms": 2.359375}
+episode 500: targets reached avg25=9.28, reward=14.88 (6.3 min)
+held-out arms: targets reached per episode = 2.66

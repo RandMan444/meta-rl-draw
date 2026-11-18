@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Broken Arm Bench</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body>
+<style>
+/* Layout: one column. The arm and the word it writes take the whole width; under them a single row of
+   ways to break the arm (two buttons, two sliders), then the one switch that matters (who is driving). */
+:root {
+  --bg: #eaefed; --panel: #f7faf9; --ink: #13211f; --ink2: #4c5f5b; --line: #cdd7d4;
+  --arm: #1c3a37; --accent: #0b7a70; --damage: #bb4a12; --target: #6d3fd6; --bench: #f2f6f4;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --text: "Inter", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1615; --panel: #162120; --ink: #e5efec; --ink2: #9bb0ab; --line: #2b3b38;
+  --arm: #cfe6e0; --accent: #43c4b3; --damage: #f0894a; --target: #b9a0ff; --bench: #121b1a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f1615; --panel: #162120; --ink: #e5efec; --ink2: #9bb0ab; --line: #2b3b38;
+  --arm: #cfe6e0; --accent: #43c4b3; --damage: #f0894a; --target: #b9a0ff; --bench: #121b1a; color-scheme: dark }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--text); font-size: 16px; line-height: 1.5;
+  padding-block: 24px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(26px, 6vw, 34px); line-height: 1.1; margin: 0 0 8px; text-wrap: balance; }
+header p { margin: 0; color: var(--ink2); max-width: 60ch; font-size: 17px; }
+header p.by { margin-top: 8px; font-size: 14.5px; }
+header p.by a { display: inline-flex; align-items: center; gap: 6px; }
+.bench { background: var(--bench); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+canvas { display: block; width: 100%; aspect-ratio: 3 / 2; }
+.status { border-top: 1px solid var(--line); padding: 10px 14px; font-family: var(--mono); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.status span { display: block; }
+.status #last { color: var(--ink2); min-height: 1.5em; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 18px; margin: 0 0 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+button, input { font: inherit; color: inherit; }
+.chip { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.chip:hover { border-color: var(--damage); }
+.chip[aria-pressed="true"] { background: var(--damage); border-color: var(--damage); color: var(--bg); font-weight: 600; }
+.chip.fix { border-style: dashed; }
+.chip.fix:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sliders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+@media (max-width: 680px) { .sliders { grid-template-columns: 1fr; } }
+.slider { display: block; padding: 10px 12px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.slider .top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.slider b { font-weight: 600; }
+.slider output { font-family: var(--mono); font-size: 13px; color: var(--ink2); font-variant-numeric: tabular-nums; }
+.slider output.out { color: var(--damage); font-weight: 600; }
+.slider input { display: block; width: 100%; margin: 10px 0 4px; accent-color: var(--damage); }
+/* under each slider: which part of its travel the agents practiced on. The 8px inset lines the bar up with the thumb's travel. */
+.zone { display: flex; margin: 0 8px; font-size: 11.5px; color: var(--ink2); line-height: 1.3; }
+.zone span { border-top: 3px solid var(--accent); padding-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.zone span.un { border-top-color: var(--damage); flex: 1; text-align: right; }
+.note { margin: 8px 0 0; color: var(--ink2); font-size: 14px; }
+.drivers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 680px) { .drivers { grid-template-columns: 1fr; } }
+.drivers label { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); cursor: pointer; }
+.drivers label:has(input:checked) { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.drivers input { grid-row: span 2; align-self: center; accent-color: var(--accent); }
+.drivers b { font-weight: 600; }
+.drivers small { color: var(--ink2); font-size: 13.5px; }
+.word { display: flex; align-items: center; gap: 10px; }
+.word input { width: 7.5em; font-family: var(--mono); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+footer { border-top: 1px solid var(--line); padding-top: 14px; color: var(--ink2); font-size: 14.5px; display: flex; flex-direction: column; gap: 6px; }
+footer p { margin: 0; max-width: 68ch; }
+a { color: var(--accent); }
+</style>
+<div class="wrap">
+  <header>
+    <h1>Break the arm. It keeps writing.</h1>
+    <p>This robot arm has never seen the damage you are about to do, and nothing retrains it. It tries a few moves, remembers what each one did, and carries on.</p>
+    <p class="by">By <a href="https://www.linkedin.com/in/chris-martinez-6749a9ba/" target="_blank" rel="noopener">Chris Martinez<svg viewBox="0 0 24 24" width="16" height="16" aria-label="LinkedIn" role="img"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a></p>
+  </header>
+
+  <div class="bench">
+    <canvas id="view" width="900" height="600" aria-label="A three-joint robot arm writing a word"></canvas>
+    <div class="status" aria-live="off"><span id="status"></span><span id="last"></span></div>
+  </div>
+
+  <section>
+    <h2>Break it</h2>
+    <div class="chips" id="damage"></div>
+    <div class="sliders">
+      <label class="slider"><span class="top"><b>Motor strength</b><output id="strength-val" for="strength"></output></span>
+        <input type="range" id="strength" min="0.5" max="3" step="0.1" value="1">
+        <span class="zone" aria-hidden="true"><span style="width:40%">practiced on</span><span class="un">never practiced on</span></span></label>
+      <label class="slider"><span class="top"><b>Drag on the next joint</b><output id="drag-val" for="drag"></output></span>
+        <input type="range" id="drag" min="0" max="1" step="0.05" value="0">
+        <span class="zone" aria-hidden="true"><span class="un">never practiced on</span></span></label>
+    </div>
+    <p class="note">Every change starts the word again. The agents practiced on rewired arms with motors from 0.5× to 1.5× strength and no drag. Past that, they are on their own.</p>
+  </section>
+
+  <section>
+    <h2>Who is driving</h2>
+    <div class="drivers">
+      <label><input type="radio" name="driver" value="learned" checked><b>Our meta-RL agent</b><small>Looks up what its own earlier moves did. 1,000 practice episodes.</small></label>
+      <label><input type="radio" name="driver" value="recurrent"><b>Standard recurrent agent</b><small>Keeps what it learns in an LSTM. 4,000 practice episodes.</small></label>
+      <label><input type="radio" name="driver" value="calibrate"><b>Hand-written self-calibrating controller</b><small>An engineer's recipe for this arm: try each move once, remember what it did.</small></label>
+      <label><input type="radio" name="driver" value="factory"><b>Controller that cannot adapt</b><small>Assumes the arm is as it left the factory.</small></label>
+    </div>
+  </section>
+
+  <label class="word">Word to write <input id="word" value="HELLO" maxlength="5" autocomplete="off" spellcheck="false" aria-label="Word to write, up to five letters or digits"></label>
+
+  <footer>
+    <p>A piece of a letter is inked when the pen touches it. The thin gray line is where the pen really went.</p>
+    <p>Past what they practiced on, ours still inks 75 to 95% of the word and the recurrent agent 35 to 75%. MAML, which adapts by changing its weights instead of by memory, never learned the arm. Ours worked out by itself what an engineer would hand-write for this arm, the self-calibrating controller above. That controller is ahead on plain strength changes, and ours is ahead on drag and when damage combines.</p>
+  </footer>
+</div>
+<script src="sim.js"></script>
+<script src="agent.js"></script>
+<script src="recurrent.js"></script>
+<script src="weights/motors3.js"></script>
+<script src="weights/recurrent3.js"></script>
+<script src="write.js"></script>
+</body>
+</html>

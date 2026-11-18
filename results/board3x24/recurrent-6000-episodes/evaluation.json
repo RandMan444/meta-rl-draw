@@ -1,0 +1,1 @@
+{"held_out_targets_reached": 2.703125, "episodes": 6000, "args": {"out": "/home/user/aruns/hard-rl2/board3x24-long", "episodes": 6000, "seed": 0, "gamma": 0.9, "lr": 0.00075, "entropy": 0.01, "hidden": 256}}

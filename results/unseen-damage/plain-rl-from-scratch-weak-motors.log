@@ -1,0 +1,18 @@
+{"arm": "weak-motors", "before_this_arm": 0.078125, "before_random_arms": 0.875}
+{"arm": "weak-motors", "episode": 25, "this_arm": 0.1875, "random_arms": 1.015625}
+{"arm": "weak-motors", "episode": 50, "this_arm": 1.109375, "random_arms": 1.125}
+episode 50: targets reached avg25=0.68, reward=3.03 (0.4 min)
+{"arm": "weak-motors", "episode": 100, "this_arm": 1.890625, "random_arms": 0.828125}
+episode 100: targets reached avg25=1.57, reward=4.08 (0.8 min)
+episode 150: targets reached avg25=2.03, reward=5.90 (1.1 min)
+{"arm": "weak-motors", "episode": 200, "this_arm": 2.140625, "random_arms": 1.109375}
+episode 200: targets reached avg25=1.94, reward=5.72 (1.5 min)
+episode 250: targets reached avg25=2.23, reward=7.14 (1.8 min)
+{"arm": "weak-motors", "episode": 300, "this_arm": 2.75, "random_arms": 1.625}
+episode 300: targets reached avg25=2.52, reward=8.84 (2.2 min)
+episode 350: targets reached avg25=3.02, reward=6.36 (2.5 min)
+episode 400: targets reached avg25=3.36, reward=7.43 (2.8 min)
+episode 450: targets reached avg25=3.52, reward=6.66 (3.2 min)
+{"arm": "weak-motors", "episode": 500, "this_arm": 3.71875, "random_arms": 1.40625}
+episode 500: targets reached avg25=3.61, reward=9.23 (3.6 min)
+held-out arms: targets reached per episode = 1.45

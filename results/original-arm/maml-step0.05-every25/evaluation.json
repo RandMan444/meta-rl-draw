@@ -1,0 +1,1 @@
+{"held_out_targets_reached": 1.734375, "episodes": 4000, "args": {"out": "/home/user/aruns/maml/a05-k25", "episodes": 4000, "seed": 0, "gamma": 0.9, "entropy": 0.01, "lr": 0.00075, "alpha": 0.05, "adapt_every": 25, "first_order": false, "no_adapt": false}}

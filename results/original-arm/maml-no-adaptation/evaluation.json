@@ -1,0 +1,1 @@
+{"held_out_targets_reached": 2.453125, "episodes": 4000, "args": {"out": "/home/user/aruns/maml/noadapt-4000", "episodes": 4000, "seed": 0, "gamma": 0.9, "entropy": 0.01, "lr": 0.00075, "alpha": 0.05, "adapt_every": 25, "first_order": false, "practice": 0, "no_adapt": true}}

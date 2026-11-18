@@ -1,0 +1,1 @@
+{"held_out_targets_reached": 10.046875, "episodes": 4000, "args": {"out": "/home/user/aruns/rl2/g9-s0", "episodes": 4000, "seed": 0, "gamma": 0.9, "lr": 0.00075, "entropy": 0.01, "hidden": 256}}

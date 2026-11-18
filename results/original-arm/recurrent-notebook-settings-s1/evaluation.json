@@ -1,0 +1,1 @@
+{"held_out_targets_reached": 8.96875, "episodes": 4000, "args": {"out": "/home/user/aruns/rl2/nb-s1", "episodes": 4000, "seed": 1, "gamma": 0.7, "lr": 0.00075, "entropy": 0.05, "hidden": 256}}
