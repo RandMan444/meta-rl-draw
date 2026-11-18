@@ -16,6 +16,22 @@ like this?" It finds the single nearest neighbor in its memory, using lookup key
 frozen, and reads off what that action really did. A small transformer reads the memory as a whole. That is all: no
 weight updates while it runs.
 
+In symbols: every move $(s_j, a_j)$ of the current episode is stored with a key, a unit vector
+
+$$k(s, a) = \frac{f(g_a \odot s,\ a)}{\lVert f(g_a \odot s,\ a) \rVert},$$
+
+where $g_a$ is a learned gate that keeps only the parts of the observation that matter for action $a$. Before each
+move the agent scores every action $a$ against memory by cosine similarity and keeps one winner, with no averaging:
+
+$$j^*(a) = \arg\max_{j} \ k(s_t, a)^\top k(s_j, a_j), \qquad \hat z_a = z_t + \big(\phi(s'_{j^*}) - \phi(s_{j^*})\big).$$
+
+Here $\phi$ is a small learned encoder of the observation and $z_t = \phi(s_t)$, so $\hat z_a$ is "where I expect to
+end up if I do $a$", built from what the most similar past move really did, and the
+policy reads it for every action. The key network $f$ is trained once, before the agent learns to act, so that moves
+with the same effect in the same episode get nearby keys. Then it is frozen, for two reasons: the $\arg\max$ passes no
+gradient, so reinforcement learning could not train the keys anyway, and fixed keys mean a memory written at move 3
+is still found the same way at move 140.
+
 It learned this on randomly rewired arms in 1,000 practice episodes. The arms on the page are damaged in ways it never
 practiced on.
 
