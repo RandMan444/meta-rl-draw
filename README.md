@@ -32,6 +32,34 @@ with the same effect in the same episode get nearby keys. Then it is frozen, for
 gradient, so reinforcement learning could not train the keys anyway, and fixed keys mean a memory written at move 3
 is still found the same way at move 140.
 
+<details>
+<summary><b>Learn more: what each symbol means</b></summary>
+
+- **$s$, the situation.** What the agent sees right now: where the pen is, where the target is relative to the pen,
+  and the three joint angles.
+- **$a$, the action.** One of 12 buttons: which motor (3), which direction (2), small or big step (2).
+- **$g_a$, the gate.** One number between 0 and 1 per feature of $s$, learned separately for each action. It answers
+  "for this button, what in the situation matters?" For a given motor it can keep the joint angles and mostly ignore
+  where the target is, because the target does not change what the motor does.
+- **$\odot$** multiplies feature by feature, so $g_a \odot s$ is the situation with the irrelevant parts dimmed.
+- **$f$, the key network.** A small neural network that turns the dimmed situation and the action into 32 numbers, a
+  fingerprint for "doing $a$ in situation $s$".
+- **Dividing by $\lVert \cdot \rVert$** scales the fingerprint to length 1 so that only its direction counts. Two
+  fingerprints are compared by their dot product, the cosine similarity: 1 when they point the same way, about 0 when
+  unrelated.
+- **How $f$ learns, and why it is frozen.** Before the agent learns to act, it watches random flailing, and $f$ is
+  trained so that two moves that did the same thing to the pen in the same episode get fingerprints pointing the same
+  way. Then $f$ is locked, so a fingerprint means the same thing for the whole run.
+- **$j^*$, the lookup.** At move 40 the agent considers "motor 2, forward, big step", makes that fingerprint and finds
+  the closest one in its memory of this episode. Say it is move 12: the same button from similar joint angles, when
+  the pen went up and to the left.
+- **$\phi(s'_{j^*}) - \phi(s_{j^*})$** is that "up and to the left", in the agent's own encoding $\phi$ of the
+  observation. Added to the current encoding $z_t$, it gives $\hat z_a$: where the agent expects to end up if it
+  presses that button now. If someone swapped the wires, move 12 already shows what motor 2 really does on this arm,
+  which is why it copes without retraining.
+
+</details>
+
 It learned this on randomly rewired arms in 1,000 practice episodes. The arms on the page are damaged in ways it never
 practiced on.
 
